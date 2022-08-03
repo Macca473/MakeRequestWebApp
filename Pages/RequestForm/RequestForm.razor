@@ -1,0 +1,30 @@
+﻿@using MakeRequestWebApp.Models;
+@using MakeRequestWebApp.Utilitys;
+
+
+<div class="row mb-3">
+    <label for="inputEmail3" class="col-sm-2 col-form-label">Request ID</label>
+    <input type="text" class="form-control col-sm-8" value="@RequestID">
+    <input type="submit" @onclick="SubReqID" />
+
+</div>
+
+<div class="overflow-scroll">
+
+    <MakeRequestWebApp.Pages.FormInput.FormInput UpdatedProp="isEdited" thisProp="@MkProp("RequestDetail", ThisReq.Record)" />
+
+    <MakeRequestWebApp.Pages.FormInput.FormInput UpdatedProp="isEdited" thisProp="@MkProp("RequestorName", ThisReq.Record)" />
+
+    <MakeRequestWebApp.Pages.FormInput.FormInput UpdatedProp="isEdited" thisProp="@MkProp("OrganisationUnitID", ThisReq.Record)" />
+
+    <div class="row mb-3">
+        <label for="inputEmail3" class="col-sm-2 col-form-label">Request ID</label>
+        <input type="text" class="form-control col-sm-8" value="@RequestID">
+        <input type="submit" @onclick="SubReqID" />
+
+    </div>
+
+    <InputFile multiple OnChange="@AddFile"/>
+
+</div>
+

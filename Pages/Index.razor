@@ -1,0 +1,30 @@
+﻿@inherits ComponentBase
+@using MakeRequestWebApp.Models;
+@page "/"
+
+<div class="container-fluid">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+        <MakeRequestWebApp.Pages.Header.Header/>
+    </header>
+</div>
+<div>
+    <div class="d-flex flex-nowrap offcanvas-body container-fluid" style="height: calc(100vh - 110px);">
+        <div class="col-3 overflow-auto sideBar" >
+            <MakeRequestWebApp.Pages.Sidebar.Sidebar />
+        </div>
+        <div class="col-9-md col overflow-auto">
+            <MakeRequestWebApp.Pages.RequestForm.RequestForm />
+        </div>
+    </div>
+    
+</div>
+
+
+
+
+@code {
+
+
+    //List<Request> Requests { get; set; }
+
+}
