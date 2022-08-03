@@ -11,7 +11,7 @@ namespace MakeRequestWebApp.Controllers
 {
     public class FileController : ControllerBase
     {
-        public readonly IWebHostEnvironment webHostEnviroment;
+        private readonly IWebHostEnvironment webHostEnviroment;
 
         public FileController(IWebHostEnvironment _webHostEnviroment)
         {
@@ -22,12 +22,11 @@ namespace MakeRequestWebApp.Controllers
 
         public void AddFile(InputFileChangeEventArgs e)
         {
-            
-            string path = Path.Combine(webHostEnviroment.ContentRootPath, "wwwroot", "Documents", e.File.Name);
+            //string path = Path.Combine(webHostEnviroment.ContentRootPath, "wwwroot", "Documents", e.File.Name);
 
-            using FileStream fs = new(path, FileMode.Create);
+            //using FileStream fs = new(path, FileMode.Create);
 
-            e.File.OpenReadStream().CopyToAsync(fs);
+            //e.File.OpenReadStream().CopyToAsync(fs);
         }
     }
 }

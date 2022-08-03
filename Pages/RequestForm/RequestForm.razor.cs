@@ -1,4 +1,5 @@
-﻿using MakeRequestWebApp.Controllers;
+﻿using Azure.Storage.Blobs;
+using MakeRequestWebApp.Controllers;
 using MakeRequestWebApp.Models;
 using MakeRequestWebApp.Utilitys;
 using Microsoft.AspNetCore.Components;
@@ -9,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
@@ -35,6 +38,8 @@ namespace MakeRequestWebApp.Pages.RequestForm
 
             //ThisReq = RC.GetRequest(87);
 
+
+
             PropertyInfo propertyInfo = ThisReq.GetType().GetProperty("ArqID");
 
             Console.WriteLine("ThisReq 1: " + ThisReq.ArqID.ToString());
@@ -56,25 +61,72 @@ namespace MakeRequestWebApp.Pages.RequestForm
 
         protected void SubReqID()
         {
-            if(DF.ReqIDSub(RequestID, EditedProps, out Request _ThisReq))
+            if (DF.ReqIDSub(RequestID, EditedProps, out Request _ThisReq))
             {
                 ThisReq = _ThisReq;
             }
         }
 
-        public void AddFile(InputFileChangeEventArgs e)
+        public async void AddFile(InputFileChangeEventArgs e)
         {
-            Console.WriteLine("AddFile: " + e.ToString() + " | " + e.File.Name);
+            Console.WriteLine("AddFile: " + e.ToString() + " | " + e.File.Name + " -----------------------------------------//  <=");
 
+            //string path = Path.Combine("http://localhost:64169", "Documents", e.File.Name);
 
+            //await using FileStream fs = new(path, FileMode.Create);
 
-            //string path = Path.Combine(_webHostEnviroment.ContentRootPath, "wwwroot", "Documents", e.File.Name);
+            //await e.File.OpenReadStream(e.File.Size).CopyToAsync(fs);
 
-            //using FileStream fs = new(path, FileMode.Create);
+            using var content = new MultipartFormDataContent();
+
+            bool upload = false;
+
+            foreach (IBrowserFile file in e.GetMultipleFiles(10))
+            {
+                try
+                {
+                    StreamContent fileContent = new StreamContent(file.OpenReadStream(1024 * 15));
+
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+
+                    content.Add(
+                        content: fileContent,
+                        name: "\"files\"",
+                        fileName: file.Name
+                        );
+
+                    upload = true;
+                } catch (Exception x)
+                {
+
+                }
+            }
 
             
 
-            //e.File.OpenReadStream().CopyToAsync(fs);
+            //HttpClientHandler clientHandler = new HttpClientHandler();
+
+            //clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+            //// Pass the handler to httpclient(from you are calling api)
+            //HttpClient client = new HttpClient(clientHandler);
+
+            if(upload)
+            {
+                HttpClient client = ClientFactory.CreateClient();
+
+                HttpResponseMessage response = await client.PostAsync("http://localhost:64169/Filesave", content);
+
+                using var responseStream = await response.Content.ReadAsStreamAsync();
+
+                Console.WriteLine("Upload: " + response.Content.ReadAsStringAsync() + " -----------------------------------------//  <=");
+            }
+
+            
+
+            //await BlobContainerClient.UploadBlobAsync("test", e.File.OpenReadStream(e.File.Size));
+
+
         }
 
 

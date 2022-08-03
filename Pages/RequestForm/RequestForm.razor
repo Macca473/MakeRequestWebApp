@@ -1,5 +1,10 @@
 ﻿@using MakeRequestWebApp.Models;
 @using MakeRequestWebApp.Utilitys;
+@using System
+@using System.IO
+
+@inject IHttpClientFactory ClientFactory
+
 
 
 <div class="row mb-3">
@@ -24,7 +29,7 @@
 
     </div>
 
-    <InputFile multiple OnChange="@AddFile"/>
+    <InputFile multiple OnChange="@AddFile" />
 
 </div>
 
