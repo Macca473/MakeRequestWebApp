@@ -23,8 +23,7 @@ namespace MakeRequestWebApp.Pages.RequestForm
         [ParameterAttribute]
         public Request ThisReq { get; set; }
 
-        [ParameterAttribute]
-        public string RequestID { get; set; } = "";
+        public bool ShowDocs { get; set; }
 
         public HashSet<FormProp> EditedProps { get; set; } = new HashSet<FormProp>();
 
@@ -37,8 +36,6 @@ namespace MakeRequestWebApp.Pages.RequestForm
             ThisReq = new Request();
 
             //ThisReq = RC.GetRequest(87);
-
-
 
             PropertyInfo propertyInfo = ThisReq.GetType().GetProperty("ArqID");
 
@@ -61,9 +58,18 @@ namespace MakeRequestWebApp.Pages.RequestForm
 
         protected void SubReqID()
         {
-            if (DF.ReqIDSub(RequestID, EditedProps, out Request _ThisReq))
+            Console.WriteLine("SubReqID: " + ThisReq.ArqID);
+
+            if (DF.ReqIDSub(ThisReq.ArqID, EditedProps, out Request _ThisReq))
             {
                 ThisReq = _ThisReq;
+
+                ShowDocs = true;
+
+                StateHasChanged();
+            } else
+            {
+                ShowDocs = false;
             }
         }
 
@@ -71,38 +77,42 @@ namespace MakeRequestWebApp.Pages.RequestForm
         {
             Console.WriteLine("AddFile: " + e.ToString() + " | " + e.File.Name + " -----------------------------------------//  <=");
 
+            Console.WriteLine(ThisReq.ArqID);
+
+            ThisReq.AddDocument(e.File);
+
             //string path = Path.Combine("http://localhost:64169", "Documents", e.File.Name);
 
             //await using FileStream fs = new(path, FileMode.Create);
 
             //await e.File.OpenReadStream(e.File.Size).CopyToAsync(fs);
 
-            using var content = new MultipartFormDataContent();
+            //using var content = new MultipartFormDataContent();
 
-            bool upload = false;
+            //bool upload = false;
 
-            foreach (IBrowserFile file in e.GetMultipleFiles(10))
-            {
-                try
-                {
-                    StreamContent fileContent = new StreamContent(file.OpenReadStream(1024 * 15));
+            //foreach (IBrowserFile file in e.GetMultipleFiles(10))
+            //{
+            //    try
+            //    {
+            //        StreamContent fileContent = new StreamContent(file.OpenReadStream(1024 * 15));
 
-                    fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+            //        fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
 
-                    content.Add(
-                        content: fileContent,
-                        name: "\"files\"",
-                        fileName: file.Name
-                        );
+            //        content.Add(
+            //            content: fileContent,
+            //            name: "\"files\"",
+            //            fileName: file.Name
+            //            );
 
-                    upload = true;
-                } catch (Exception x)
-                {
+            //        upload = true;
+            //    } catch (Exception x)
+            //    {
 
-                }
-            }
+            //    }
+            //}
 
-            
+
 
             //HttpClientHandler clientHandler = new HttpClientHandler();
 
@@ -111,18 +121,18 @@ namespace MakeRequestWebApp.Pages.RequestForm
             //// Pass the handler to httpclient(from you are calling api)
             //HttpClient client = new HttpClient(clientHandler);
 
-            if(upload)
-            {
-                HttpClient client = ClientFactory.CreateClient();
+            //if(upload)
+            //{
+            //    HttpClient client = ClientFactory.CreateClient();
 
-                HttpResponseMessage response = await client.PostAsync("http://localhost:64169/Filesave", content);
+            //    HttpResponseMessage response = await client.PostAsync("http://localhost:64169/Filesave", content);
 
-                using var responseStream = await response.Content.ReadAsStreamAsync();
+            //    using var responseStream = await response.Content.ReadAsStreamAsync();
 
-                Console.WriteLine("Upload: " + response.Content.ReadAsStringAsync() + " -----------------------------------------//  <=");
-            }
+            //    Console.WriteLine("Upload: " + response.Content.ReadAsStringAsync() + " -----------------------------------------//  <=");
+            //}
 
-            
+
 
             //await BlobContainerClient.UploadBlobAsync("test", e.File.OpenReadStream(e.File.Size));
 

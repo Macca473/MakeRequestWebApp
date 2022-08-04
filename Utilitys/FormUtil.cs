@@ -56,9 +56,9 @@ namespace MakeRequestWebApp.Utilitys
             }
         }
 
-        public bool ReqIDSub(string RequestID, HashSet<FormProp> EditedProps, out Request ThisReq)
+        public bool ReqIDSub(int RequestID, HashSet<FormProp> EditedProps, out Request ThisReq)
         {
-            if (RequestID == "" || RequestID == null)
+            if (RequestID == 0)
             {
                 Console.WriteLine("RequestID is empty");
 
@@ -87,7 +87,7 @@ namespace MakeRequestWebApp.Utilitys
 
                 try
                 {
-                    ThisReq = GetRequest(Int32.Parse(RequestID));
+                    ThisReq = GetRequest(RequestID);
 
                     return true;
                 }

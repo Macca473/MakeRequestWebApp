@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace MakeRequestWebApp.Models
 {
@@ -17,6 +18,21 @@ namespace MakeRequestWebApp.Models
         public void MakeDocumentList()
         {
             DocumentList = new DocumentList($"ObjectType_Request", ArqID);
+        }
+
+        public void AddDocument(IBrowserFile file)
+        {
+            DocumentController DC = new DocumentController();
+
+            DocumentResponse documentResponse = DC.AddDocument(new AddDocumentClass(new ObjectKey($"ObjectType_Request", ArqID), file));
+
+            if (documentResponse != null)
+            {
+                documentResponse.UploadDoc(file);
+            } else
+            {
+                Console.WriteLine("DocumentResponse Returned null");
+            }
         }
 
         public Request()

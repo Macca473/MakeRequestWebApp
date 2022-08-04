@@ -1,4 +1,5 @@
 ﻿using MakeRequestWebApp.Controllers;
+using Microsoft.AspNetCore.Components.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,24 @@ namespace MakeRequestWebApp.Models
     public class DocumentList
     {
         public List<Document> documents { get; set; }
+        private ObjectKey objectKey { get; set; }
 
         public DocumentList(string _objectType, int Val)
         {
             DocumentController DC = new DocumentController();
 
-            DC.MakeDocuments(new ObjectKey(_objectType, Val));
+            objectKey = new ObjectKey(_objectType, Val);
+
+            DC.GetDocuments(objectKey);
+        }
+
+        public void AddDocument(IBrowserFile file)
+        {
+            DocumentController DC = new DocumentController();
+
+            DocumentResponse documentResponse = DC.AddDocument(new AddDocumentClass(objectKey, file));
+
+            documentResponse.UploadDoc(file);
         }
 
     }
@@ -45,8 +58,7 @@ namespace MakeRequestWebApp.Models
     {
         public string LinkExpireTime { get; set; }
         public string Link { get; set; }
-
-        private int DocumentID { get; set; }
+        public int DocumentID { get; set; }
 
     }
 
@@ -61,6 +73,25 @@ namespace MakeRequestWebApp.Models
             DocumentID = _DocumentID;
 
             ObjectKey = _ObjectKey;
+        }
+    }
+
+    public class AddDocumentClass
+    {
+        public string Address { get; set; }
+        public DateTime CreateTime { get; set; }
+        public string ContentType { get; set; }
+        public ObjectKey ObjectKey { get; set; }
+
+        public AddDocumentClass(ObjectKey objectKey, IBrowserFile file)
+        {
+            Address = $"Asset/{objectKey.int32Value}/{file.Name}";
+
+            CreateTime = DateTime.Now;
+
+            ContentType = file.ContentType;
+
+            ObjectKey = objectKey;
         }
     }
 }

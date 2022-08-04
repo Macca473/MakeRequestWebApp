@@ -1,4 +1,5 @@
 ﻿using MakeRequestWebApp.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +10,40 @@ namespace MakeRequestWebApp.Controllers
 {
     public class DocumentController : RootController
     {
-        public DocumentList MakeDocuments(ObjectKey OK)
+        public DocumentResponse AddDocument(AddDocumentClass AD)
         {
-            Console.WriteLine($"MakeRequest: {JsonSerializer.Serialize<ObjectKey>(OK)}");
+            Console.WriteLine($"AddDocument: {JsonConvert.SerializeObject(AD)}");
 
-            if (PostAPI("/api/documents/list", JsonSerializer.Serialize<ObjectKey>(OK), out string Res))
+            if (PostAPI("/api/documents/add_document", JsonConvert.SerializeObject(AD), out string Res))
             {
                 try
                 {
-                    return JsonSerializer.Deserialize<DocumentList>(Res);
+                    Console.WriteLine($"AddDocument responce: {Res}");
+
+                    DocumentResponse TestDoc = JsonConvert.DeserializeObject<DocumentResponse>(Res);
+
+                    Console.WriteLine($"AddDocument Uri: {TestDoc.UploadUri}");
+
+                    return JsonConvert.DeserializeObject<DocumentResponse>(Res);
+                }
+                catch (Exception e) {
+                    return null;
+                }
+
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public DocumentList GetDocuments(ObjectKey OK)
+        {
+            if (PostAPI("/api/documents/list", JsonConvert.SerializeObject(OK), out string Res))
+            {
+                try
+                {
+                    return JsonConvert.DeserializeObject<DocumentList>(Res);
 
                 }
                 catch (Exception e) { return null; }
@@ -31,13 +57,13 @@ namespace MakeRequestWebApp.Controllers
 
         public DocumentLink MakeDocumentLink(DocumentLinkReq DR)
         {
-            Console.WriteLine($"MakeRequest: {JsonSerializer.Serialize<DocumentLinkReq>(DR)}");
+            Console.WriteLine($"MakeRequest: {JsonConvert.SerializeObject(DR)}");
 
-            if (PostAPI("/api/documents/list", JsonSerializer.Serialize<DocumentLinkReq>(DR), out string Res))
+            if (PostAPI("/api/documents/list", JsonConvert.SerializeObject(DR), out string Res))
             {
                 try
                 {
-                    return JsonSerializer.Deserialize<DocumentLink>(Res);
+                    return JsonConvert.DeserializeObject<DocumentLink>(Res);
 
                 }
                 catch (Exception e) { return null; }

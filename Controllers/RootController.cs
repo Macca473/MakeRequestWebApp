@@ -16,7 +16,7 @@ namespace MakeRequestWebApp.Controllers
 
         public HttpClient APIClient()
         {
-            Console.WriteLine("Running BaseController"); 
+            Console.WriteLine("Running RootController"); 
 
             HttpClient ConAPI = new HttpClient();
 
