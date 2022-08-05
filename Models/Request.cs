@@ -15,11 +15,13 @@ namespace MakeRequestWebApp.Models
         public Record Record { get; set; }
         public DocumentList DocumentList { get; set; }
 
+        // Document list constructer
         public void MakeDocumentList()
         {
             DocumentList = new DocumentList($"ObjectType_Request", ArqID);
         }
 
+        // runs add document in document controller and uploads document
         public void AddDocument(IBrowserFile file)
         {
             DocumentController DC = new DocumentController();

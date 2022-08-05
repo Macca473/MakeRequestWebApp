@@ -10,6 +10,7 @@ namespace MakeRequestWebApp.Utilitys
 {
     public class FormUtil : RequestController
     {
+
         public void ConvPI(object Rq)
         {
             List<PropertyInfo> Props = Rq.GetType().GetProperties().ToList();
@@ -22,6 +23,8 @@ namespace MakeRequestWebApp.Utilitys
             }
         }
 
+
+        //Creates a Form Property using the value and Property Name
         public FormProp GetProperty(string propName, object Obj)
         {
             Console.WriteLine("Running GetProperty: " + propName);
@@ -56,6 +59,7 @@ namespace MakeRequestWebApp.Utilitys
             }
         }
 
+        //Makes a request if the request ID is zero using the form values(EditedProps), or finds the value using the request ID
         public bool ReqIDSub(int RequestID, HashSet<FormProp> EditedProps, out Request ThisReq)
         {
             if (RequestID == 0)
@@ -87,7 +91,7 @@ namespace MakeRequestWebApp.Utilitys
 
                 try
                 {
-                    ThisReq = GetRequest(RequestID);
+                    ThisReq = GetRequest(RequestID) ?? throw new ArgumentNullException();
 
                     return true;
                 }
@@ -102,6 +106,7 @@ namespace MakeRequestWebApp.Utilitys
             }
         }
 
+        // checks to see if the minimum requirement of input values is provided
         public bool CheckMinReq(HashSet<FormProp> EditedProps)
         {
             string[] MinReq = { "OrganisationUnitID", "RequestDetail", "RequestorName" };

@@ -23,7 +23,7 @@ namespace MakeRequestWebApp.Pages.RequestForm
         [ParameterAttribute]
         public Request ThisReq { get; set; }
 
-        public bool ShowDocs { get; set; }
+        public bool ShowDocs { get; set; } = false;
 
         public HashSet<FormProp> EditedProps { get; set; } = new HashSet<FormProp>();
 
@@ -36,43 +36,39 @@ namespace MakeRequestWebApp.Pages.RequestForm
             ThisReq = new Request();
 
             //ThisReq = RC.GetRequest(87);
-
-            PropertyInfo propertyInfo = ThisReq.GetType().GetProperty("ArqID");
-
-            Console.WriteLine("ThisReq 1: " + ThisReq.ArqID.ToString());
-
-            Console.WriteLine("ThisReq: " + propertyInfo.GetValue(ThisReq));
-
-            Console.WriteLine("ThisReq: " + propertyInfo.GetValue(ThisReq));
         }
 
+        // Make Property
         public FormProp MkProp(string inp, object obj)
         {
             return DF.GetProperty(inp, obj);
         }
 
+        // is edited (from form input)
         protected void isEdited(FormProp prop)
         {
             EditedProps.Add(prop);
         }
 
-        protected void SubReqID()
+        // Submit Request ID: Runs Request ID Submission and changes the show docks condition 
+        public void SubReqID()
         {
             Console.WriteLine("SubReqID: " + ThisReq.ArqID);
 
-            if (DF.ReqIDSub(ThisReq.ArqID, EditedProps, out Request _ThisReq))
+            if (DF.ReqIDSub(ThisReq.ArqID, EditedProps, out Request _ThisReq)) 
             {
                 ThisReq = _ThisReq;
 
                 ShowDocs = true;
 
-                StateHasChanged();
+                Console.WriteLine("ShowDocs: " + ShowDocs);
             } else
             {
                 ShowDocs = false;
             }
         }
 
+        // Runs the Add document in the selected Request
         public async void AddFile(InputFileChangeEventArgs e)
         {
             Console.WriteLine("AddFile: " + e.ToString() + " | " + e.File.Name + " -----------------------------------------//  <=");
